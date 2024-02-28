@@ -1,0 +1,90 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Function to swap two elements in an array
+void swap(int* x, int* y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+// Function to partition the array using a non-random pivot
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];  // Pivot is the last element
+    int i = (low - 1);  // Smaller element index
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+// Function to perform QuickSort with a non-random pivot
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int piv = partition(arr, low, high);
+
+        quickSort(arr, low, piv - 1);
+        quickSort(arr, piv + 1, high);
+    }
+}
+
+// Function to partition the array using a random pivot
+int randomizedPartition(int arr[], int low, int high) {
+    srand(time(NULL));  // Seed for random number generation
+    int randomIndex = low + rand() % (high - low + 1);
+
+    // Swapping the randomly chosen element with the last element 
+    swap(&arr[randomIndex], &arr[high]);
+
+    return partition(arr, low, high);
+}
+
+// Function to perform QuickSort with a random pivot
+void randomizedQuickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int piv = randomizedPartition(arr, low, high);
+
+        randomizedQuickSort(arr, low, piv - 1);
+        randomizedQuickSort(arr, piv + 1, high);
+    }
+}
+
+// Function to print an array
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// Main function for testing
+int main() {
+    int arr[] = {13, 8, 7, 6, 9, 4, 2, 18, 16, 20};
+    int size = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original array: ");
+    printArray(arr, size);
+
+    // Non-random pivot QuickSort
+    quickSort(arr, 0, size - 1);
+    printf("Sorted array (non-random pivot): ");
+    printArray(arr, size);
+
+    // Reset the array
+    int arr2[] = {13, 8, 7, 6, 9, 4, 2, 18, 16, 20};
+
+    // Random pivot QuickSort
+    randomizedQuickSort(arr2, 0, size - 1);
+    printf("Sorted array (random pivot): ");
+    printArray(arr2, size);
+
+    return 0;
+}
