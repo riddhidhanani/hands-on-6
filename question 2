@@ -1,0 +1,53 @@
+import time
+import random
+import matplotlib.pyplot as plt
+
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+
+def generate_best_case_input(n):
+    return list(range(1, n + 1))
+
+def generate_worst_case_input(n):
+    return list(range(n, 0, -1))
+
+def generate_average_case_input(n):
+    return [random.randint(1, 1000) for _ in range(n)]
+
+def benchmark_scenario(sort_func, scenario_func, sizes):
+    execution_times = []
+    for size in sizes:
+        input_array = scenario_func(size)
+        start_time = time.time()
+        sort_func(input_array)
+        execution_time = time.time() - start_time
+        execution_times.append(execution_time)
+    return execution_times
+
+def plot_results(sizes, best_case_times, worst_case_times, average_case_times):
+    plt.plot(sizes, best_case_times, label='Best Case')
+    plt.plot(sizes, worst_case_times, label='Worst Case')
+    plt.plot(sizes, average_case_times, label='Average Case')
+    plt.xlabel('Input Size (n)')
+    plt.ylabel('Execution Time (seconds)')
+    plt.title('QuickSort Benchmark')
+    plt.legend()
+    plt.ylim(0, max(worst_case_times) * 1.1)  # Adjust y-axis limits for better visualization
+    plt.show()
+
+if __name__ == "__main__":
+    sizes = [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000] 
+    
+    # Benchmark best-case, worst-case, and average-case scenarios
+    best_case_times = benchmark_scenario(quicksort, generate_best_case_input, sizes)
+    worst_case_times = benchmark_scenario(quicksort, generate_worst_case_input, sizes)
+    average_case_times = benchmark_scenario(quicksort, generate_average_case_input, sizes)
+
+    # Plot the results
+    plot_results(sizes, best_case_times, worst_case_times, average_case_times)
